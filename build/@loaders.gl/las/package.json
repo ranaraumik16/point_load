@@ -1,0 +1,79 @@
+{
+  "_from": "@loaders.gl/las",
+  "_id": "@loaders.gl/las@2.2.8",
+  "_inBundle": false,
+  "_integrity": "sha512-oAwSzVNdfN1+e9oK1fz+5I+1C5n2207jdzSSVv+5tx4+3gzQ7EEHeobdQkOwbqI2VXxPxJc6EGO7xo5c85L6CA==",
+  "_location": "/@loaders.gl/las",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "@loaders.gl/las",
+    "name": "@loaders.gl/las",
+    "escapedName": "@loaders.gl%2flas",
+    "scope": "@loaders.gl",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@loaders.gl/las/-/las-2.2.8.tgz",
+  "_shasum": "ca2ee3ac7be92589d2658bde401237def1642f4f",
+  "_spec": "@loaders.gl/las",
+  "_where": "D:\\IT\\Mine-Project",
+  "browser": {
+    "fs": false,
+    "path": false,
+    "ws": false,
+    "crypto": false
+  },
+  "bugs": {
+    "url": "https://github.com/visgl/loaders.gl/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "@babel/runtime": "^7.3.1",
+    "@loaders.gl/loader-utils": "2.2.8"
+  },
+  "deprecated": false,
+  "description": "Framework-independent loader for the LAS and LAZ formats",
+  "esnext": "dist/es6/index.js",
+  "files": [
+    "src",
+    "dist",
+    "README.md"
+  ],
+  "gitHead": "8724c5175ef2d4207a8590a32e338178f73a06f9",
+  "homepage": "https://github.com/visgl/loaders.gl#readme",
+  "keywords": [
+    "webgl",
+    "loader",
+    "3d",
+    "mesh",
+    "point cloud",
+    "LAS",
+    "LAZ"
+  ],
+  "license": "MIT",
+  "main": "dist/es5/index.js",
+  "module": "dist/esm/index.js",
+  "name": "@loaders.gl/las",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/visgl/loaders.gl.git"
+  },
+  "scripts": {
+    "build-bundle": "webpack --display=minimal --config ../../scripts/bundle.config.js",
+    "build-worker": "webpack --entry ./src/las-loader.worker.js --output ./dist/las-loader.worker.js --config ../../scripts/worker-webpack-config.js",
+    "pre-build": "npm run build-worker && npm run build-bundle",
+    "pre-build-disabled": "npm run copy-libs && npm run build-worker && npm run build-worker-dev && npm run build-bundle && npm run build-bundle -- --env.dev"
+  },
+  "sideEffects": false,
+  "version": "2.2.8"
+}
