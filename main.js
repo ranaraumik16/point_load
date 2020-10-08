@@ -10,7 +10,6 @@ var timer = 0;
 var delay = 250;
 var prevent = false;
 
-
 var canvasWidth = window.innerWidth
 var canvasHeight = window.innerHeight
 var mouse = new THREE.Vector2();
@@ -101,26 +100,68 @@ async function init() {
     });
 
     window.addEventListener('resize', onWindowResize, false);
+    window.addEventListener('click', onclick);
+
+}
+function onclick(event) {
+    timer = setTimeout(function () {
+        if (!prevent) {
+            mouse.x = (event.clientX / canvasWidth) * 2 - 1;
+            mouse.y = - (event.clientY / canvasHeight) * 2 + 1;
+            checkIntersectionclick();
+        }
+        prevent = false;
+    }, delay);
 }
 
+var linematerial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+function checkIntersectionclick() {
+    console.log("clicked")
+    var raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(mouse, camera);
+    var intersectionclick = raycaster.intersectObjects(addedObject, true);
+    if (intersectionclick.length > 0) {
+        var sphere = new THREE.Mesh(geometrySphere, materialSphere);
+        sphere.name = "point"
+        if (!p1 && !p2) {
+            p1 = intersectionclick[0].point
+        } else if (p1 && !p2) {
+            p2 = intersectionclick[0].point
 
+            var path = new THREE.LineCurve3(p1, p2);
+            var Tubegeometry = new THREE.TubeGeometry(path, 20, .5, 8, false);
+            var line = new THREE.Mesh(Tubegeometry, linematerial);
+            line.name = "dimensionLine"
+            line.renderOrder = 1
+            scene.add(line)
+
+            p1 = p2
+            p2 = null
+        }
+        addedObject.push(sphere)
+        sphere.position.copy(intersectionclick[0].point)
+        scene.add(sphere)
+    }
+}
 function pointCloudfromBuffer(point, colors) {
 
     var geom = new THREE.BufferGeometry();
     geom.setAttribute('position', new THREE.BufferAttribute(point, 3));
-    var col = []
-    for (var i = 0; i < colors.length; i++) {
+    colors.forEach((e,i,arr)=>{
+        arr[i] = 255 - e
+    })
 
-            if(i%4 == 3){
-                continue;
-            }
-            col.push(1-(colors[i]/255))
-        }
+    // var col = []
+    // for (var i = 0; i < colors.length; i++) {
 
+    //         if(i%4 == 3){
+    //             continue;
+    //         }
+    //         col.push(1-(colors[i]/255))
+    //     }
+    // geom.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
 
-    geom.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
-
-    // geom.setAttribute('color', new THREE.BufferAttribute(col, 3, true));
+    geom.setAttribute('color', new THREE.BufferAttribute(colors, 4, true));
     // geom.setAttribute('color', new THREE.Uint8BufferAttribute(col, 3));
     // geom.setAttribute( 'color', new THREE.BufferAttribute( colors, 4 ) );
     geom.computeBoundingBox()
@@ -135,16 +176,17 @@ function pointCloudfromBuffer(point, colors) {
     // get poind cloud to origin
     cloud.position.set(cloud.position.x - centerP.x, cloud.position.y - centerP.y, cloud.position.z - centerP.z)
     console.log(cloud);
-
+    addedObject.push(cloud)
+    cloud.renderOrder = 0
     scene.add(cloud);
 }
 
 function onWindowResize() {
-    var canvasWidth = window.innerWidth
-    var canvasHeight = window.innerHeight
-    camera.aspect = window.innerWidth / window.innerHeight;
+    canvasWidth = window.innerWidth
+    canvasHeight = window.innerHeight
+    camera.aspect = canvasWidth / canvasHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(canvasWidth, canvasHeight);
 }
 
 function animate() {
