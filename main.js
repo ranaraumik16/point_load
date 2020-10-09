@@ -147,21 +147,21 @@ function checkIntersectionclick() {
         if (!p1 && !p2) {
             p1 = intersectionclick[0].point
         } else if (p1 && !p2) {
-            // p2 = intersectionclick[0].point
+            p2 = intersectionclick[0].point
 
-            // var path = new THREE.LineCurve3(p1, p2);
-            // var Tubegeometry = new THREE.TubeGeometry(path, 20, .5, 8, false);
-            // var line = new THREE.Mesh(Tubegeometry, linematerial);
-            // line.name = "dimensionLine"
-            // line.renderOrder = 1
-            // // scene.add(line)
+            var path = new THREE.LineCurve3(p1, p2);
+            var Tubegeometry = new THREE.TubeGeometry(path, 20, .5, 8, false);
+            var line = new THREE.Mesh(Tubegeometry, linematerial);
+            line.name = "dimensionLine"
+            line.renderOrder = 1
+            // scene.add(line)
 
-            // p1 = p2
-            // p2 = null
-        // }
-        // addedObject.push(sphere)
-        // sphere.position.copy(intersectionclick[0].point)
-        // scene.add(sphere)
+            p1 = p2
+            p2 = null
+        }
+        addedObject.push(sphere)
+        sphere.position.copy(intersectionclick[0].point)
+        scene.add(sphere)
     }
 }
 function pointCloudfromBuffer(point, colors) {
