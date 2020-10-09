@@ -76,7 +76,24 @@ async function init() {
     light2.position.set(500, 500, -1000);
     // scene.add(light2);
 
+    var tempP = [new THREE.Vector3(0,0,0)]
+    // var tempGeo = new THREE.BufferGeometry()
+    var xgeometry = new THREE.BufferGeometry();
+    var vertices = new Float32Array( [
+        0,0,0
+    ] );
+    // itemSize = 3 because there are 3 values (components) per vertex
+    xgeometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+    var tempPoints = new THREE.Points(xgeometry, new THREE.PointsMaterial({ size: 20, vertexColors: false,color:0xff0000 }));
+    scene.add(tempPoints)
+    addedObject.push(tempPoints)
 
+    var geometry = new THREE.SphereGeometry(5, 32, 32);
+    var material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+    var sphere = new THREE.Mesh(geometry, material);
+    sphere.name = "first"
+    scene.add(sphere);
+    addedObject.push(sphere)
     var lightA = new THREE.AmbientLight(0xFFFFFF, .5); // soft white light
     // scene.add(lightA);
 
@@ -114,40 +131,44 @@ function onclick(event) {
     }, delay);
 }
 
-var linematerial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+var linematerial = new THREE.MeshBasicMaterial({ color: 0x0000ff, depthTest: false });
 function checkIntersectionclick() {
     console.log("clicked")
     var raycaster = new THREE.Raycaster();
+    raycaster.params.Mesh.threshold = 20
+    raycaster.params.Points.threshold = 20
     raycaster.setFromCamera(mouse, camera);
     var intersectionclick = raycaster.intersectObjects(addedObject, true);
     if (intersectionclick.length > 0) {
-        var sphere = new THREE.Mesh(geometrySphere, materialSphere);
-        sphere.name = "point"
+        console.log(intersectionclick);
+
+        // var sphere = new THREE.Mesh(geometrySphere, materialSphere);
+        // sphere.name = "point"
         if (!p1 && !p2) {
             p1 = intersectionclick[0].point
         } else if (p1 && !p2) {
-            p2 = intersectionclick[0].point
+            // p2 = intersectionclick[0].point
 
-            var path = new THREE.LineCurve3(p1, p2);
-            var Tubegeometry = new THREE.TubeGeometry(path, 20, .5, 8, false);
-            var line = new THREE.Mesh(Tubegeometry, linematerial);
-            line.name = "dimensionLine"
-            line.renderOrder = 1
-            scene.add(line)
+            // var path = new THREE.LineCurve3(p1, p2);
+            // var Tubegeometry = new THREE.TubeGeometry(path, 20, .5, 8, false);
+            // var line = new THREE.Mesh(Tubegeometry, linematerial);
+            // line.name = "dimensionLine"
+            // line.renderOrder = 1
+            // // scene.add(line)
 
-            p1 = p2
-            p2 = null
-        }
-        addedObject.push(sphere)
-        sphere.position.copy(intersectionclick[0].point)
-        scene.add(sphere)
+            // p1 = p2
+            // p2 = null
+        // }
+        // addedObject.push(sphere)
+        // sphere.position.copy(intersectionclick[0].point)
+        // scene.add(sphere)
     }
 }
 function pointCloudfromBuffer(point, colors) {
 
     var geom = new THREE.BufferGeometry();
     geom.setAttribute('position', new THREE.BufferAttribute(point, 3));
-    colors.forEach((e,i,arr)=>{
+    colors.forEach((e, i, arr) => {
         arr[i] = 255 - e
     })
 
@@ -178,7 +199,7 @@ function pointCloudfromBuffer(point, colors) {
     console.log(cloud);
     addedObject.push(cloud)
     cloud.renderOrder = 0
-    scene.add(cloud);
+    // scene.add(cloud);
 }
 
 function onWindowResize() {
